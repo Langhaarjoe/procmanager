@@ -84,19 +84,19 @@ class ListFiles(Command):
                 "--Directory, -D": "list all the files opened in a direcotry, descending"
                 }
         self.commands = {
-                ("--pid", "-p", 2): "lsof -p ",
-                ("--all", "-a", 1): "lsof",
-                ("--user", "-u", 2): "lsof -u ",
-                ("--directory", "-d", 2): "lsof +d ",
-                ("--Direcotiry", "-D", 2): "lsof +D "
+                ("--pid", "-p"): "lsof -p ",
+                ("--all", "-a"): "lsof",
+                ("--user", "-u"): "lsof -u ",
+                ("--directory", "-d"): "lsof +d ",
+                ("--Direcotiry", "-D"): "lsof +D "
                 }
 
     def run(self):
         if self.args:
             for command in self.commands.keys():
-                if self.args[0] in command and len(self.args) == command[2]:
+                if self.args[0] in command and len(self.args) == 1:
                     os.system(self.commands[command])
-                elif self.args[0] in command and len(self.args) == command[2]:
+                elif self.args[0] in command and len(self.args) == 2:
                     os.system(self.commands[command] + self.args[1])
         else:
             for i, x in self.description.items():
