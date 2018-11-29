@@ -2,6 +2,7 @@
 
 import os
 import psutil
+import signal
 
 class Command():
     def __init__(self, args):
@@ -17,7 +18,7 @@ class ListProcs(Command):
             if os.path.isdir(proc + "/" + d) and d.isdigit():
                 print(d)
                 
-class SendSignal(Command): // added by Marius
+class SendSignal(Command): # added by Marius
     def __init__(self, args):
         pass
 
@@ -69,13 +70,44 @@ class showMem:
                 exst = True
                 print (line[10:])
         if not exst: 
-                print ('No status')    
+                print ('No status')
+
+class ListFiles(Command):
+
+    def __init__(self, args):
+        self.args = args
+        self.description = {
+                "--all, -a": "list all open files",
+                "--pid, -p": "list all the files opened by a process",
+                "--user, -u": "list all the files owned by a user",
+                "--directory, -d": "list all the files opened in a directory, not descending",
+                "--Directory, -D": "list all the files opened in a direcotry, descending"
+                }
+        self.commands = {
+                ("--pid", "-p", 2): "lsof -p ",
+                ("--all", "-a", 1): "lsof",
+                ("--user", "-u", 2): "lsof -u ",
+                ("--directory", "-d", 2): "lsof +d ",
+                ("--Direcotiry", "-D", 2): "lsof +D "
+                }
+
+    def run(self):
+        if self.args:
+            for command in self.commands.keys():
+                if self.args[0] in command and len(self.args) == command[2]:
+                    os.system(self.commands[command])
+                elif self.args[0] in command and len(self.args) == command[2]:
+                    os.system(self.commands[command] + self.args[1])
+        else:
+            for i, x in self.description.items():
+                print(f"{i}: {x}")
                   
 commands = {
+    "listfiles": lambda args: ListFiles(args),
     "list" : lambda args: ListProcs(args),
     "show_status": lambda args: ShowStatus(args), 
-    "send_signal": lambda pid: SendSignal(pid) // added by Marius
-    "env"  : lambda args: ListVars(args)
+    "send_signal": lambda pid: SendSignal(pid),  # added by Marius
+    "env"  : lambda args: ListVars(args),
     "memory_usage": lambda args: showMem(args)
 }
 
